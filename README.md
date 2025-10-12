@@ -1,7 +1,7 @@
-# 🚀 Fraud Detection with Neo4j — Guide
+# Fraud Detection with Neo4j — Guide
 
 <p align="center">
-  <img src="images/dashboard_preview.png" alt="Fraud Detection Dashboard Preview" width="750">
+  <img src="images/Q2.png" alt="Fraud Detection Dashboard Preview" width="750">
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 
 ---
 
-## 🧭 Table of Contents
+## Table of Contents
 1. [Prerequisites](#-prerequisites)
 2. [Repository Structure](#-repository-structure)
 3. [Quick Start](#-quick-start)
@@ -24,7 +24,7 @@
 
 ---
 
-## 🧰 Prerequisites
+## Prerequisites
 
 Install the following before starting:
 
@@ -40,9 +40,8 @@ pip install -r requirements.txt
 
 ```
 
-⸻
 
-## 📂 Repository Structure
+## Repository Structure
 ```bash
 
 fraud-detection-neo4j/
@@ -64,9 +63,8 @@ fraud-detection-neo4j/
 └── README.md
 ```
 
-⸻
 
-## ⚡ Quick Start
+## Quick Start
 
 If you just want to get everything running quickly:
 
@@ -97,11 +95,10 @@ python scripts/data_gen.py
 streamlit run scripts/streamlit_app.py
 ```
 
-Then open your browser at http://localhost:8501 🎨
+Then open your browser at http://localhost:8501 
 
-⸻
 
-## 🔍 Detailed Steps
+## Detailed Steps
 
 # 1️⃣ Create a New Neo4j DBMS
 	1.	Open Neo4j Desktop.
@@ -141,9 +138,8 @@ This creates:
 	•	Account, Device, and Country nodes
 	•	Relationships: TRANSFERRED_TO, USED_DEVICE, and LOCATED_IN
 
-⸻
 
-## 🔐 Setting Neo4j Credentials
+## Setting Neo4j Credentials
 
 Before running the Streamlit app, create a .env file inside scripts/ with:
 ```bash
@@ -177,37 +173,34 @@ Once credentials are set, run:
 ```bash
 streamlit run scripts/streamlit_app.py
 ```
-⸻
 
-## 🧪 Lab Questions
+## Lab Questions
 
 What to deliver for each question:
 	•	Query text (copy into your answers)
 	•	PNG exported from Neo4j (put in /images/)
 	•	Short interpretation (2–4 sentences): what pattern is visible and why it might be suspicious
 
-⸻
 
-## 🧾 What to Submit
+## What to Submit
 
 If submitting as coursework:
-	•	✅ /images/ folder with at least 4 exported visuals
-	•	✅ Queries used and short 2–3 line interpretations
-	•	✅ Optional: Streamlit screenshot (dashboard_preview.png)
-	•	✅ A link to your GitHub repo or zipped folder
+	•	/images/ folder with at least 4 exported visuals
+	•	Queries used and short 2–3 line interpretations
+	•	Optional: Streamlit screenshot (dashboard_preview.png)
+	•	A link to your GitHub repo or zipped folder
 
-⸻
 
-## 🧯 Troubleshooting
+## Troubleshooting
 
 # LOAD CSV gives “file not found” or Failed to fetch file
-A: Make sure transactions.csv is in your DBMS import folder (the path shown in Neo4j Desktop → Manage → Files). Use file:///transactions.csv exactly.
+Make sure transactions.csv is in your DBMS import folder (the path shown in Neo4j Desktop → Manage → Files). Use file:///transactions.csv exactly.
 
 # Permission denied / import fails
-A: Ensure the DBMS is running before running LOAD CSV. Restart DBMS and try again.
+Ensure the DBMS is running before running LOAD CSV. Restart DBMS and try again.
 
 # Streamlit fails to connect to Neo4j
-A: Edit scripts/ .env to set the correct Neo4j password and URI. Example:
+Edit scripts/ .env to set the correct Neo4j password and URI. Example:
 
 The app loads credentials automatically from your .env file.
 If Streamlit fails to connect, confirm that your .env file (in scripts/) contains:
@@ -220,8 +213,8 @@ NEO4J_PASSWORD=your_password
 
 and that your Neo4j Desktop DBMS is running locally.
 
-Q: Queries return no results
-A: Try a simple check:
+# Queries return no results
+Try a simple check:
 
 ```bash
 MATCH (n) RETURN count(n);
@@ -229,10 +222,9 @@ MATCH (n) RETURN count(n);
 
 If zero, the import did not run — re-run neo4j_import.cypher.
 
-Q: PNGs too small or crowded
-A: Use LIMIT to reduce returned nodes. Try different layouts (Radial, Force-directed) and increase Neo4j Browser zoom before exporting.
+# PNGs too small or crowded
+Use LIMIT to reduce returned nodes. Try different layouts (Radial, Force-directed) and increase Neo4j Browser zoom before exporting.
 
-⸻
 
 ## 📘 Appendix
 
@@ -251,10 +243,8 @@ MATCH (n) DETACH DELETE n;
 	•	Use the camera icon to export images
 
 
-⸻
 
 
 <p align="center">
-  <em>Developed by Arjun Krishna Ghosh — visualize fraud detection through connected data and graph analytics.</em>
+  <em>Developed by Arjun Krishna Ghosh, visualize fraud detection through connected data and graph analytics.</em>
 </p>
-```

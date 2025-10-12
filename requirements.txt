@@ -1,0 +1,4 @@
+pandas
+neo4j
+streamlit
+py2neo

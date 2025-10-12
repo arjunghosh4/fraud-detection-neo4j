@@ -1,51 +1,47 @@
-Fraud Detection with Neo4j — Guide
+# 🚀 Fraud Detection with Neo4j — Guide
 
-![Fraud Detection Dashboard Preview](images/dashboard_preview.png)
+<p align="center">
+  <img src="images/dashboard_preview.png" alt="Fraud Detection Dashboard Preview" width="750">
+</p>
 
-Project: fraud-detection-neo4j
-Purpose: A hands-on lab to show how transaction data can be modeled and analyzed as a graph to detect shared identifiers, risky jurisdictions, and suspicious transaction patterns.
-What you will get working:
-	•	Single CSV dataset → import to Neo4j
-	•	Neo4j graph with Account, Device, Country nodes and relationships
-	•	Several Cypher lab queries with visuals you can export (PNG)
-	•	A Streamlit dashboard that reads the same Neo4j DB and shows KPIs
+<p align="center">
+  <em>End-to-end fraud detection pipeline using Neo4j graphs and Streamlit dashboards.<br>
+  Model transactions as nodes and relationships to uncover shared devices, high-risk jurisdictions, and suspicious money flows.</em>
+</p>
 
-⸻
+---
 
-Table of Contents
-	1.	Prerequisites
-	2.	Repository structure (what’s in the repo)
-	3.	Quick start (one-command checklist)
-	4.	Detailed steps
-	•	Clone repo
-	•	Create & activate Python environment
-	•	Generate dataset
-	•	Install Neo4j Desktop & create DBMS
-	•	Import CSV into Neo4j (copy file → run Cypher)
-	•	Run verification and analysis queries
-	•	Export visuals (PNG)
-	•	Run Streamlit dashboard
-	5.	Lab questions (10 queries for students)
-	6.	What to submit
-	7.	Troubleshooting & FAQs
-	8.	Appendix — useful commands & Cypher snippets
+## 🧭 Table of Contents
+1. [Prerequisites](#-prerequisites)
+2. [Repository Structure](#-repository-structure)
+3. [Quick Start](#-quick-start)
+4. [Detailed Steps](#-detailed-steps)
+5. [Setting Neo4j Credentials](#-setting-neo4j-credentials)
+6. [Lab Questions](#-lab-questions)
+7. [What to Submit](#-what-to-submit)
+8. [Troubleshooting](#-troubleshooting)
+9. [Appendix](#-appendix)
 
-⸻
+---
 
-1) Prerequisites
+## 🧰 Prerequisites
 
-Before you start, install the following on your machine:
-	•	Git (for cloning the repo)
-	•	Python 3.9+ (3.10 or 3.11 recommended)
-	•	Neo4j Desktop (free) or access to a Neo4j instance (Neo4j Aura or Neo4j Desktop)
-	•	Neo4j Desktop download: https://neo4j.com/download/
-	•	Optional but recommended: a code editor (VS Code)
+Install the following before starting:
 
-You will also install Python packages listed in requirements.txt later.
+- [Git](https://git-scm.com/)
+- [Python 3.9+](https://www.python.org/downloads/) (3.10 or 3.11 recommended)
+- [Neo4j Desktop](https://neo4j.com/download/)
+- [VS Code](https://code.visualstudio.com/) *(optional but recommended)*
+
+Install required Python packages later using:
+
+```bash
+pip install -r requirements.txt
+
 
 ⸻
 
-2) Repository structure (what you should see)
+📂 Repository Structure
 
 fraud-detection-neo4j/
 │
@@ -58,222 +54,99 @@ fraud-detection-neo4j/
 │   ├── fraud_lab_queries.cypher   # (optional) lab queries for students
 │   └── streamlit_app.py           # Streamlit dashboard (reads Neo4j)
 │
-├── images/                        # put exported PNGs here
+├── images/                        # exported visuals
 │   ├── graph_shared_devices.png
 │   └── dashboard_preview.png
 │
-├── README.md                      # this file
-└── requirements.txt
+├── requirements.txt
+└── README.md
+
 
 ⸻
 
-3) Quick start (one-command checklist)
+⚡ Quick Start
 
-If you just want to run everything quickly, follow these four steps:
-	1.	Clone this repo:
+If you just want to get everything running quickly:
 
+# 1️⃣ Clone this repo
 git clone https://github.com/arjunghosh4/fraud-detection-neo4j.git
 cd fraud-detection-neo4j
 
-	2.	Create Python environment & install packages:
-
+# 2️⃣ Create a virtual environment
 python -m venv .venv
-# Windows:
-.venv\Scripts\activate
-# macOS / Linux:
-source .venv/bin/activate
+source .venv/bin/activate        # macOS / Linux
+# OR
+.venv\Scripts\activate           # Windows
+
+# 3️⃣ Install dependencies
 pip install -r requirements.txt
 
-	3.	Generate the CSV:
-
+# 4️⃣ Generate the dataset
 python scripts/data_gen.py
 
-	4.	Start Neo4j Desktop, create and start a local DBMS, copy data/transactions.csv into the DBMS import folder, then open Neo4j Browser and run:
-
+# 5️⃣ Import data into Neo4j
+#   - Start Neo4j Desktop
+#   - Copy data/transactions.csv → Neo4j import folder
+#   - Run this inside Neo4j Browser:
 :source scripts/neo4j_import.cypher
 
-	5.	Run Streamlit (optional):
-
+# 6️⃣ Run the Streamlit dashboard
 streamlit run scripts/streamlit_app.py
 
-Detailed instructions below.
+Then open your browser at http://localhost:8501 🎨
 
 ⸻
 
-4) Detailed step-by-step instructions
+🔍 Detailed Steps
 
-A — Clone the repo
-
-Open a terminal and run:
-
-git clone https://github.com/arjunghosh4/fraud-detection-neo4j.git
-cd fraud-detection-neo4j
-
-⸻
-
-B — Create and activate Python virtual environment (recommended)
-
-python -m venv .venv
-
-# Windows (PowerShell)
-.venv\Scripts\Activate.ps1
-
-# Windows (cmd.exe)
-.venv\Scripts\activate
-
-# macOS / Linux
-source .venv/bin/activate
-
-Install dependencies:
-
-pip install -r requirements.txt
-
-requirements.txt should include:
-
-pandas
-streamlit
-neo4j
-py2neo
-
-
-⸻
-
-C — Generate the dataset (one CSV)
-
-We provide scripts/data_gen.py to create a realistic synthetic dataset.
-
-Run:
-
-python scripts/data_gen.py
-
-This creates data/transactions.csv. Confirm it exists:
-
-ls data
-# or on Windows
-dir data
-
-Note: If you want to tweak the amount of data or sharing behavior (e.g., more shared devices), open scripts/data_gen.py and edit the parameters at the top.
-
-⸻
-
-D — Install Neo4j Desktop and create a DBMS
-	1.	Download and install Neo4j Desktop from neo4j.com.
-	2.	Open Neo4j Desktop.
-	3.	Create a new Project (click + New → Project, name it Fraud Lab).
-	4.	Inside the project, Add → Local DBMS.
+1️⃣ Create a New Neo4j DBMS
+	1.	Open Neo4j Desktop.
+	2.	Create a new Project → Name it Fraud Lab.
+	3.	Add a Local DBMS:
 	•	Name: fraud-detection-db
-	•	Password: choose a password (for examples we use neo4j — but pick something secure).
-	5.	Start the DBMS (click play ▶). Wait until it’s Running.
+	•	Password: neo4j2025 (or any password you choose)
+	4.	Start the DBMS (click ▶️ Play).
+	5.	Note the Import folder path:
+	•	Right-click → Manage → Files → find “Import Folder”.
 
-Find the import folder path:
-	•	Click the three dots (⋮) next to your DBMS → Manage → Files → you will see Import Folder: <path>.
+2️⃣ Copy CSV File into Import Folder
 
-⸻
-
-E — Copy transactions.csv into Neo4j import folder
-
-Copy the generated CSV into the DBMS import folder:
-
-Windows example (PowerShell)
-
-Copy-Item -Path ".\data\transactions.csv" -Destination "C:\Users\<you>\Neo4j\relate-data\dbmss\<db-id>\import"
-
-macOS / Linux example
-
+# Example macOS/Linux:
 cp data/transactions.csv "/Users/<you>/Library/Application Support/Neo4j Desktop/Application/relate-data/dbmss/<db-id>/import/"
 
-⸻
+# Example Windows (PowerShell):
+Copy-Item -Path ".\data\transactions.csv" -Destination "C:\Users\<you>\Neo4j\relate-data\dbmss\<db-id>\import"
 
-F — Import CSV into Neo4j using the provided Cypher
+3️⃣ Load Data into Neo4j
 
-Open Neo4j Browser (click Query or Open Browser in Neo4j Desktop). Log in (user: neo4j, password: the one you set).
-
-First test that Neo4j sees the CSV:
+In Neo4j Browser, run:
 
 LOAD CSV WITH HEADERS FROM "file:///transactions.csv" AS row
 RETURN count(row);
 
-You should see the number of rows (e.g., 2000).
-
-Then run the import script (copy-paste or use :source):
-
-Option A — paste script
-Open the file scripts/neo4j_import.cypher in your editor, copy its contents, paste into Neo4j Browser and run.
-
-Option B — run source
-If your Neo4j Browser has access to the repo path or you placed the .cypher in the import folder, you can run:
+You should see the total row count.
+Then import:
 
 :source scripts/neo4j_import.cypher
 
-(Usually paste/copy is easiest.)
-
-This script:
-	•	Creates Account nodes for from_account and to_account
-	•	Creates Device and Country nodes
-	•	Sets Country.risk property
-	•	Creates TRANSFERRED_TO relationships (with amount, time, ip)
-	•	Creates USED_DEVICE and LOCATED_IN relationships
+This creates:
+	•	Account, Device, and Country nodes
+	•	Relationships: TRANSFERRED_TO, USED_DEVICE, and LOCATED_IN
 
 ⸻
 
-G — Verify graph creation (quick checks)
+🔐 Setting Neo4j Credentials
 
-Run these queries in Neo4j Browser to confirm:
-
-Counts by label
-
-MATCH (n) RETURN labels(n) AS label, count(n) AS count;
-
-Sample graph view
-
-MATCH (a:Account)-[r]->(b) RETURN a,r,b LIMIT 50;
-
-If everything looks good, proceed to the lab queries below.
-
-⸻
-
-H — Export visuals (PNG) to include in your report
-	1.	Run one of the lab queries (see next section).
-	2.	In the result panel, switch to the Graph view.
-	3.	Arrange layout:
-	•	Right-click graph → Layout → Radial / Force-directed / Hierarchical
-	•	Use the style (palette) icon to color labels as you like (Account, Device, Country)
-	4.	Click the camera icon (top-right) → Download as PNG.
-	5.	Save into images/ folder in the repo:
-	•	images/Q4_shared_devices.png, etc.
-
-Add the PNG file(s) to the repo:
-
-git add images/Q4_shared_devices.png
-git commit -m "Add shared devices visualization"
-git push
-
-⸻
-
-I — Run the Streamlit dashboard
-
-Open a new terminal (ensure your Python virtual environment is activated) and start Streamlit:
-
-streamlit run scripts/streamlit_app.py
-
-Then open http://localhost:8501 in your browser.
-
-⸻
-
-Setting Neo4j Credentials (using .env file)
-
-Before running the dashboard, create a small .env file inside the scripts/ folder with your Neo4j details:
+Before running the Streamlit app, create a .env file inside scripts/ with:
 
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
-NEO4J_PASSWORD=your_password
+NEO4J_PASSWORD=neo4j2025
 
-⚠️ Replace neo4jpwd with the password you used when creating your DBMS in Neo4j Desktop.
-Keep this file private, do not commit it to GitHub.
+⚠️ Replace neo4j2025 with your own DBMS password.
+Keep this file private — do not commit it to GitHub.
 
-The app automatically loads these credentials using python-dotenv.
-
-If you prefer to set them manually for testing, you can also run:
+If you don’t want to use .env, you can also set environment variables manually:
 
 macOS / Linux
 
@@ -287,82 +160,82 @@ $env:NEO4J_URI="bolt://localhost:7687"
 $env:NEO4J_USER="neo4j"
 $env:NEO4J_PASSWORD="your_password"
 
-⸻
+Once credentials are set, run:
 
-Once credentials are set, the Streamlit app connects to Neo4j and shows KPIs,
-top devices, and high-risk transactions from the graph database.
+streamlit run scripts/streamlit_app.py
 
-If credentials are missing, the app will stop and show an on-screen warning.
 
 ⸻
 
-5) Lab questions (10 queries) — student exercises
+🧪 Lab Questions
 
-What to deliver for each question:
-	•	Query text (copy into your answers)
-	•	PNG exported from Neo4j (put in /images/)
-	•	Short interpretation (2–4 sentences): what pattern is visible and why it might be suspicious
+These queries help visualize different fraud detection patterns.
+Run them in Neo4j Browser and export results as PNGs.
 
-⸻
+#	Objective	Sample Cypher Query
+1	Count nodes by label	MATCH (n) RETURN labels(n), count(n);
+2	Accounts using same device	MATCH (a:Account)-[:USED_DEVICE]->(d:Device)<-[:USED_DEVICE]-(b:Account) WHERE a<>b RETURN a,d,b;
+3	Devices with >1 linked accounts	MATCH (d:Device)<-[:USED_DEVICE]-(a:Account) WITH d,count(a) AS c WHERE c>1 RETURN d,c;
+4	Accounts in risky countries	MATCH (a:Account)-[:LOCATED_IN]->(c:Country) WHERE c.risk>0.7 RETURN a,c;
+5	Circular money flow	MATCH p=(a:Account)-[:TRANSFERRED_TO*2..4]->(a) RETURN p LIMIT 10;
+6	Top devices by connected accounts	MATCH (d:Device)<-[:USED_DEVICE]-(a:Account) RETURN d.id, count(a) ORDER BY count(a) DESC LIMIT 5;
 
-6) What to submit (suggested)
-
-If your professor expects a deliverable, submit a small package (either a GitHub link to your repo or a zip containing):
-	•	scripts/ folder with data_gen.py, neo4j_import.cypher, fraud_lab_queries.cypher, streamlit_app.py
-	•	data/transactions.csv (or instructions to generate)
-	•	images/ folder with exported PNGs (at least 4 visuals)
-	•	README.md (this file) with:
-	•	Steps you followed
-	•	List of queries you ran
-	•	Explanations for each saved image
+Export visuals as PNG using the camera icon in Neo4j Browser.
 
 ⸻
 
-7) Troubleshooting & FAQs
+🧾 What to Submit
 
-Q: LOAD CSV gives “file not found” or Failed to fetch file
-A: Make sure transactions.csv is in your DBMS import folder (the path shown in Neo4j Desktop → Manage → Files). Use file:///transactions.csv exactly.
+If submitting as coursework:
+	•	✅ /images/ folder with at least 4 exported visuals
+	•	✅ Queries used and short 2–3 line interpretations
+	•	✅ Optional: Streamlit screenshot (dashboard_preview.png)
+	•	✅ A link to your GitHub repo or zipped folder
 
-Q: Permission denied / import fails
-A: Ensure the DBMS is running before running LOAD CSV. Restart DBMS and try again.
+⸻
 
-Q: Streamlit fails to connect to Neo4j
-A: Edit scripts/ .env to set the correct Neo4j password and URI. Example:
+🧯 Troubleshooting
 
-The app loads credentials automatically from your .env file.
-If Streamlit fails to connect, confirm that your .env file (in scripts/) contains:
+🔸 LOAD CSV gives “file not found”
+Ensure transactions.csv is inside the Neo4j import folder.
+
+🔸 Streamlit fails to connect
+Check your .env file:
 
 NEO4J_URI=bolt://localhost:7687
 NEO4J_USER=neo4j
 NEO4J_PASSWORD=your_password
 
-and that your Neo4j Desktop DBMS is running locally.
+and make sure the Neo4j DBMS is running.
 
-Q: Queries return no results
-A: Try a simple check:
+🔸 No results in queries
+Run:
 
 MATCH (n) RETURN count(n);
 
-If zero, the import did not run — re-run neo4j_import.cypher.
+If it returns 0, re-run the import.
 
-Q: PNGs too small or crowded
-A: Use LIMIT to reduce returned nodes. Try different layouts (Radial, Force-directed) and increase Neo4j Browser zoom before exporting.
+🔸 Graph too cluttered
+Use smaller LIMIT values or the “Radial” layout before exporting PNGs.
 
 ⸻
 
-8) Appendix — useful commands & snippets
+📘 Appendix
 
-Clear the graph (if you want to re-import fresh data):
-
+# Clear graph (re-import fresh data)
 MATCH (n) DETACH DELETE n;
 
-Run a single file of Cypher commands (paste into Neo4j Browser):
-	•	Open the .cypher file and paste contents → run
-	•	OR :source scripts/fraud_lab_queries.cypher (browser support varies; copy-paste is safest)
+# Verify counts
+MATCH (n) RETURN labels(n), count(*);
 
-Neo4j Browser tips
-	•	Use the left sidebar to access query history and favorites
-	•	Use the Graph Style palette to color nodes by label and show label text
-	•	Use the camera icon to export images
+# Reload data
+:source scripts/neo4j_import.cypher
+
 
 ⸻
+
+
+<p align="center">
+  <em>Developed by Arjun Krishna Ghosh — visualize fraud detection through connected data and graph analytics.</em>
+</p>
+```

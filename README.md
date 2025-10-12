@@ -103,7 +103,7 @@ Then open your browser at http://localhost:8501 🎨
 
 ## 🔍 Detailed Steps
 
-1️⃣ Create a New Neo4j DBMS
+# 1️⃣ Create a New Neo4j DBMS
 	1.	Open Neo4j Desktop.
 	2.	Create a new Project → Name it Fraud Lab.
 	3.	Add a Local DBMS:
@@ -113,7 +113,7 @@ Then open your browser at http://localhost:8501 🎨
 	5.	Note the Import folder path:
 	•	Right-click → Manage → Files → find “Import Folder”.
 
-2️⃣ Copy CSV File into Import Folder
+# 2️⃣ Copy CSV File into Import Folder
 
 ```bash
 # Example macOS/Linux:
@@ -123,7 +123,7 @@ cp data/transactions.csv "/Users/<you>/Library/Application Support/Neo4j Desktop
 Copy-Item -Path ".\data\transactions.csv" -Destination "C:\Users\<you>\Neo4j\relate-data\dbmss\<db-id>\import"
 ```
 
-3️⃣ Load Data into Neo4j
+# 3️⃣ Load Data into Neo4j
 
 In Neo4j Browser, run:
 ```bash

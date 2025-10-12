@@ -1,7 +1,7 @@
 # 🚀 Fraud Detection with Neo4j — Guide
 
 <p align="center">
-  <img src="images/dashboard_preview.png" alt="Fraud Detection Dashboard Preview" width="750">
+  <img src="images/Q7.png" alt="Fraud Detection Dashboard Preview" width="750">
 </p>
 
 <p align="center">

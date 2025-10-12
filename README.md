@@ -1,7 +1,7 @@
-# Fraud Detection with Neo4j — Guide
+# 🚀 Fraud Detection with Neo4j — Guide
 
 <p align="center">
-  <img src="images/Q2.png" alt="Fraud Detection Dashboard Preview" width="750">
+  <img src="images/dashboard_preview.png" alt="Fraud Detection Dashboard Preview" width="750">
 </p>
 
 <p align="center">
@@ -11,7 +11,7 @@
 
 ---
 
-## Table of Contents
+## 🧭 Table of Contents
 1. [Prerequisites](#-prerequisites)
 2. [Repository Structure](#-repository-structure)
 3. [Quick Start](#-quick-start)
@@ -24,7 +24,7 @@
 
 ---
 
-## Prerequisites
+## 🧰 Prerequisites
 
 Install the following before starting:
 
@@ -41,7 +41,7 @@ pip install -r requirements.txt
 ```
 
 
-## Repository Structure
+## 📂 Repository Structure
 ```bash
 
 fraud-detection-neo4j/
@@ -64,7 +64,7 @@ fraud-detection-neo4j/
 ```
 
 
-## Quick Start
+## ⚡ Quick Start
 
 If you just want to get everything running quickly:
 
@@ -98,7 +98,7 @@ streamlit run scripts/streamlit_app.py
 Then open your browser at http://localhost:8501 
 
 
-## Detailed Steps
+## 🔍 Detailed Steps
 
 # 1️⃣ Create a New Neo4j DBMS
 	1.	Open Neo4j Desktop.
@@ -139,7 +139,7 @@ This creates:
 	•	Relationships: TRANSFERRED_TO, USED_DEVICE, and LOCATED_IN
 
 
-## Setting Neo4j Credentials
+## 🔐 Setting Neo4j Credentials
 
 Before running the Streamlit app, create a .env file inside scripts/ with:
 ```bash
@@ -174,7 +174,7 @@ Once credentials are set, run:
 streamlit run scripts/streamlit_app.py
 ```
 
-## Lab Questions
+## 🧪 Lab Questions
 
 What to deliver for each question:
 	•	Query text (copy into your answers)
@@ -182,7 +182,7 @@ What to deliver for each question:
 	•	Short interpretation (2–4 sentences): what pattern is visible and why it might be suspicious
 
 
-## What to Submit
+## 🧾 What to Submit
 
 If submitting as coursework:
 	•	/images/ folder with at least 4 exported visuals
@@ -191,7 +191,7 @@ If submitting as coursework:
 	•	A link to your GitHub repo or zipped folder
 
 
-## Troubleshooting
+## 🧯 Troubleshooting
 
 # LOAD CSV gives “file not found” or Failed to fetch file
 Make sure transactions.csv is in your DBMS import folder (the path shown in Neo4j Desktop → Manage → Files). Use file:///transactions.csv exactly.

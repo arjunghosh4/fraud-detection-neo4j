@@ -1,4 +1,5 @@
 pandas
-neo4j
 streamlit
+neo4j
 py2neo
+python-dotenv

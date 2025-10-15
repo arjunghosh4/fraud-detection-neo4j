@@ -58,3 +58,75 @@ WHERE numDevices > 1
 RETURN a, numDevices, devices
 ORDER BY numDevices DESC
 LIMIT 10;
+
+// 11. Find all high-risk accounts located in risky countries. Idea: Add flag as true for high risk countries
+MATCH (a:Account)-[:LOCATED_IN]->(c:Country)
+WHERE c.risk > 0.7
+SET a.flagged = true
+RETURN a.id AS Account, c.name AS Country, c.risk AS RiskScore
+ORDER BY RiskScore DESC
+LIMIT 20;
+
+// 12. Trace the transaction flow from high-risk accounts
+MATCH (a:Account {flagged:true})-[:TRANSFERRED_TO*1..3]->(b:Account)
+RETURN DISTINCT a, b
+LIMIT 50;
+
+// 13. Rank countries by total number of transactions
+MATCH (a:Account)-[:TRANSFERRED_TO]->(b:Account)-[:LOCATED_IN]->(c:Country)
+RETURN c.name AS Country, count(*) AS TransactionCount
+ORDER BY TransactionCount DESC
+LIMIT 10;
+
+// 14. Find accounts that both send and receive transactions
+MATCH (a:Account)-[:TRANSFERRED_TO]->(:Account)-[:TRANSFERRED_TO]->(a)
+RETURN DISTINCT a
+LIMIT 50;
+
+// 15. Compute average transaction amount per country
+MATCH (a:Account)-[t:TRANSFERRED_TO]->(b:Account)-[:LOCATED_IN]->(c:Country)
+RETURN c.name AS Country, round(avg(t.amount),2) AS AvgAmount
+ORDER BY AvgAmount DESC
+LIMIT 10;
+
+// 16. Find accounts using devices that appear in multiple risky countries
+MATCH (a:Account)-[:USED_DEVICE]->(d:Device)<-[:USED_DEVICE]-(b:Account)-[:LOCATED_IN]->(c:Country)
+WHERE c.risk > 0.7
+RETURN DISTINCT a, d, c
+LIMIT 50;
+
+// 17. Identify transaction chains longer than 3 hops
+MATCH p=(a:Account)-[:TRANSFERRED_TO*4..6]->(b:Account)
+RETURN p
+LIMIT 10;
+
+// 18. Detect “hub” accounts - those connected to many others
+MATCH (a:Account)-[:TRANSFERRED_TO]->(b:Account)
+WITH a, count(b) AS degree
+WHERE degree > 5
+RETURN a.id AS HubAccount, degree
+ORDER BY degree DESC
+LIMIT 10;
+
+// 19. Propagate risk through connected accounts
+MATCH (a:Account)-[:TRANSFERRED_TO*1..2]->(b:Account)-[:LOCATED_IN]->(c:Country)
+WHERE c.risk > 0.7
+SET a.indirect_risk = true
+RETURN DISTINCT a, c
+LIMIT 50;
+
+// 20. Find IPs associated with transactions to multiple countries
+MATCH (a:Account)-[t:TRANSFERRED_TO]->(b:Account)-[:LOCATED_IN]->(c:Country)
+WITH t.ip AS ip, collect(DISTINCT c.name) AS countries
+WHERE size(countries) > 1
+RETURN ip, countries, size(countries) AS CountryCount
+ORDER BY CountryCount DESC
+LIMIT 10;
+
+// 21. Find high-risk transactions coming from risky IP clusters
+MATCH (a:Account)-[t:TRANSFERRED_TO]->(b:Account)-[:LOCATED_IN]->(c:Country)
+WHERE c.risk > 0.7
+WITH t.ip AS ip, collect(DISTINCT a.id) AS senders, collect(DISTINCT c.name) AS riskyCountries
+RETURN ip, size(senders) AS Senders, riskyCountries
+ORDER BY Senders DESC
+LIMIT 10;

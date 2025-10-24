@@ -52,12 +52,13 @@ fraud-detection-neo4j/
 ├── scripts/
 │   ├── data_gen.py                # script to generate transactions.csv
 │   ├── neo4j_import.cypher        # Cypher script to create nodes/relationships
-│   ├── fraud_lab_queries.cypher   # (optional) lab queries for students
+│   ├── fraud_lab_questions.cypher   # (optional) lab queries for students
+	├── fraud_lab_answers.cypher   # (optional) lab solutions
 │   └── streamlit_app.py           # Streamlit dashboard (reads Neo4j)
 │
-├── images/                        # exported visuals
-│   ├── graph_shared_devices.png
-│   └── dashboard_preview.png
+├── images/                        # exported visuals for all the queries
+│   ├── Q1.png
+│   └── Q2.png
 │
 ├── requirements.txt
 └── README.md

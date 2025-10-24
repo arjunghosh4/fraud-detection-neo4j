@@ -130,3 +130,63 @@ WITH t.ip AS ip, collect(DISTINCT a.id) AS senders, collect(DISTINCT c.name) AS 
 RETURN ip, size(senders) AS Senders, riskyCountries
 ORDER BY Senders DESC
 LIMIT 10;
+
+// 22. Identify accounts that are both a 'Hub' (high transaction degree) and are flagged for high risk. Idea: Combining two separate indicators (high connection count and high-risk flag) to pinpoint the most critical accounts for investigation. This leverages the pre-calculated risk flag and the calculated degree centrality.
+MATCH (a:Account {flagged: true})-[:TRANSFERRED_TO]->(b:Account)
+WITH a, count(b) AS OutDegree
+WHERE OutDegree > 5
+RETURN a.id AS HighRiskHub, OutDegree
+ORDER BY OutDegree DESC
+LIMIT 10;
+
+// 23. Find devices used by accounts that have transacted with high-risk countries AND accounts that share the same device. Idea: Detecting shared devices where one user has confirmed high-risk activity (transaction to a risky country) and another account is connected to the same device. This links high-risk transaction patterns to potential collusion via shared infrastructure.
+// Step 1: Find accounts that transacted to a high-risk country
+MATCH (riskySender:Account)-[:TRANSFERRED_TO]->(:Account)-[:LOCATED_IN]->(c:Country)
+WHERE c.risk > 0.7
+WITH collect(DISTINCT riskySender) AS HighRiskSenders
+
+// Step 2: Find devices used by these risky senders
+MATCH (d:Device)<-[:USED_DEVICE]-(r:Account)
+WHERE r IN HighRiskSenders
+
+// Step 3: Find other accounts that also use those same devices (the shared account)
+MATCH (d)<-[:USED_DEVICE]-(sharedAccount:Account)
+WHERE NOT sharedAccount IN HighRiskSenders // Exclude the sender themselves
+RETURN d.id AS SharedDevice, collect(DISTINCT r.id) AS RiskySenders, collect(DISTINCT sharedAccount.id) AS SharedAccounts
+LIMIT 50;
+
+// 24. Calculate the risk score of a country based not only on its internal risk but also on the average risk score of countries it transfers funds to. Idea: Creating a derived, external risk metric (a form of propagation) for a country by analyzing where its accounts send money. This is a deeper look into the country's network position.
+// Step 1: Find all external transactions and collect the destination risk scores per source country.
+MATCH (senderAccount:Account)-[:LOCATED_IN]->(sourceCountry:Country)
+MATCH (senderAccount)-[:TRANSFERRED_TO]->(:Account)-[:LOCATED_IN]->(destCountry:Country)
+WHERE sourceCountry <> destCountry // Only consider external transfers
+
+// Step 2: Group by the source country and collect all destination risks into a list.
+WITH sourceCountry.name AS Source, collect(destCountry.risk) AS DestinationRisks
+
+// Step 3: UNWIND the list of collected risks back into individual rows...
+UNWIND DestinationRisks AS RiskScore
+
+// Step 4: ...and calculate the average of those individual rows, grouped by the original Source.
+WITH Source, collect(RiskScore) AS AllScores, RiskScore
+RETURN Source, 
+       round(avg(RiskScore), 3) AS AvgDestinationRiskScore, 
+       size(AllScores) AS TotalExternalTransactions
+ORDER BY AvgDestinationRiskScore DESC
+LIMIT 10;
+
+// 25. Find the shortest path (in terms of accounts) between the two accounts with the highest total transaction amounts. Idea: A pathfinding query used for investigative purposes to see how two seemingly unrelated high-value targets (potential ringleaders) are connected in the network.
+// Step 1: Calculate the total outgoing transaction amount for all accounts and pass the top 2 forward.
+MATCH (a:Account)-[t:TRANSFERRED_TO]->()
+WITH a, sum(t.amount) AS TotalSent
+ORDER BY TotalSent DESC
+LIMIT 2
+WITH collect(a) AS TopTwo
+
+// Step 2: Assign the two accounts to specific variables from the list.
+WITH TopTwo[0] AS StartNode, TopTwo[1] AS EndNode
+
+// Step 3: Find the shortest path between the two, limited to a max of 5 hops.
+MATCH p=shortestPath((StartNode)-[:TRANSFERRED_TO*1..5]-(EndNode))
+RETURN p, StartNode.id AS Account1, EndNode.id AS Account2, length(p) AS PathLength
+LIMIT 1;
